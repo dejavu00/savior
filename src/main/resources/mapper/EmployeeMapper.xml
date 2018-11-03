@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.springboot.mybatis.mapper.EmployeeMapper">
+
+    <!--LoadAll-->
+    <select id="LoadAll" resultType="cn.itsource.springboot.mybatis.domain.Employee" resultMap="EmpMap">
+        select e.*,d.id did,d.name from t_employee_copy1 as e left join t_department as d on e.dept_id = d.id;
+    </select>
+    <resultMap id="EmpMap" type="cn.itsource.springboot.mybatis.domain.Employee">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <association property="department" javaType="cn.itsource.springboot.mybatis.domain.Department">
+            <id property="id" column="did"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+    <!--SaveOne-->
+    <insert id="saveOne" parameterType="cn.itsource.springboot.mybatis.domain.Employee" >
+      insert into t_employee_copy1 (id, username, password, dept_id)
+      VALUES (#{id}, #{username}, #{password}, #{department.id})
+    </insert>
+    <!--updateOne-->
+    <update id="updateOne" parameterType="cn.itsource.springboot.mybatis.domain.Employee">
+      update t_employee_copy1 set  username=#{username},password=#{password},dept_id=#{department.id}
+      where id = #{id}
+    </update>
+
+    <select id="loadOneById" resultType="cn.itsource.springboot.mybatis.domain.Employee" resultMap="EmpOneMap">
+        select e.*,d.id did,d.name from t_employee_copy1 as e left join t_department as d on e.dept_id = d.id
+        where e.id=#{id};
+    </select>
+    <resultMap id="EmpOneMap" type="cn.itsource.springboot.mybatis.domain.Employee">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <association property="department" javaType="cn.itsource.springboot.mybatis.domain.Department">
+            <id property="id" column="did"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+    <!--deleteOneById-->
+    <delete id="deleteOneById" parameterType="long">
+        delete from t_employee_copy1 where id =#{id};
+    </delete>
+
+
+</mapper>
